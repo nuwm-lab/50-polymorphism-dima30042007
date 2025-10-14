@@ -2,43 +2,39 @@ using System;
 
 namespace FractionFunctionApp
 {
-    // 🔹 Базовий клас — дробово-лінійна функція виду (a1*x + a0) / (b1*x + b0)
-    class FractionLinear
+    // 🔸 Базовий клас
+    class FractionFunction
     {
-        private double a1, a0, b1, b0;
-        protected const double EPS = 1e-9; // поріг для перевірки ділення на нуль
+        protected const double EPS = 1e-9;
+        protected double a1, a0, b1, b0;
 
-        // 🔸 Властивості (Properties)
-        public double A1 { get => a1; set => a1 = value; }
-        public double A0 { get => a0; set => a0 = value; }
-        public double B1 { get => b1; set => b1 = value; }
-        public double B0 { get => b0; set => b0 = value; }
-
-        // 🔸 Конструктор без параметрів
-        public FractionLinear() { }
-
-        // 🔸 Параметризований конструктор
-        public FractionLinear(double a1, double a0, double b1, double b0)
+        public FractionFunction(double a1 = 0, double a0 = 0, double b1 = 1, double b0 = 0)
         {
-            A1 = a1;
-            A0 = a0;
-            B1 = b1;
-            B0 = b0;
+            this.a1 = a1;
+            this.a0 = a0;
+            this.b1 = b1;
+            this.b0 = b0;
         }
 
-        // 🔸 Метод задання коефіцієнтів
-        public virtual void SetCoefficients(double a1, double a0, double b1, double b0)
+        // Метод для задання коефіцієнтів
+        public virtual void SetCoefficients()
         {
-            A1 = a1;
-            A0 = a0;
-            B1 = b1;
-            B0 = b0;
+            Console.Write("Введіть a1: "); a1 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть a0: "); a0 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть b1: "); b1 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть b0: "); b0 = double.Parse(Console.ReadLine());
         }
 
-        // 🔸 Метод обчислення значення функції в точці x0
-        public virtual double Calculate(double x0)
+        // Метод для виведення коефіцієнтів
+        public virtual void PrintCoefficients()
         {
-            double denominator = B1 * x0 + B0;
+            Console.WriteLine($"a1 = {a1}, a0 = {a0}, b1 = {b1}, b0 = {b0}");
+        }
+
+        // 🔹 Динамічний поліморфізм — метод буде перевизначений у спадкоємцях
+        public virtual double Calculate(double x)
+        {
+            double denominator = b1 * x + b0;
 
             if (Math.Abs(denominator) < EPS)
             {
@@ -46,59 +42,49 @@ namespace FractionFunctionApp
                 return double.NaN;
             }
 
-            return (A1 * x0 + A0) / denominator;
+            return (a1 * x + a0) / denominator;
         }
 
-        // 🔸 Метод виведення (ToString)
         public override string ToString()
         {
-            return $"f(x) = ({A1}x + {A0}) / ({B1}x + {B0})";
+            return $"f(x) = ({a1}x + {a0}) / ({b1}x + {b0})";
         }
     }
 
-    // 🔹 Похідний клас — дробова функція виду (a2*x² + a1*x + a0) / (b2*x² + b1*x + b0)
-    class FractionQuadratic : FractionLinear
+    // 🔸 Похідний клас — дробова функція
+    class QuadraticFractionFunction : FractionFunction
     {
         private double a2, b2;
 
-        public double A2 { get => a2; set => a2 = value; }
-        public double B2 { get => b2; set => b2 = value; }
-
-        // 🔸 Конструктор без параметрів
-        public FractionQuadratic() { }
-
-        // 🔸 Параметризований конструктор
-        public FractionQuadratic(double a2, double a1, double a0, double b2, double b1, double b0)
+        public QuadraticFractionFunction(double a2 = 0, double a1 = 0, double a0 = 0,
+                                         double b2 = 0, double b1 = 1, double b0 = 0)
             : base(a1, a0, b1, b0)
         {
-            A2 = a2;
-            B2 = b2;
+            this.a2 = a2;
+            this.b2 = b2;
         }
 
-        // 🔸 Перевизначення SetCoefficients (повністю узгоджене з базовим)
-        public override void SetCoefficients(double a2, double a1, double b2, double b1)
+        // Перевизначення методу для задання коефіцієнтів
+        public override void SetCoefficients()
         {
-            A2 = a2;
-            A1 = a1;
-            B2 = b2;
-            B1 = b1;
+            Console.Write("Введіть a2: "); a2 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть a1: "); a1 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть a0: "); a0 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть b2: "); b2 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть b1: "); b1 = double.Parse(Console.ReadLine());
+            Console.Write("Введіть b0: "); b0 = double.Parse(Console.ReadLine());
         }
 
-        // 🔸 Перевантажений варіант SetCoefficients для повного набору
-        public void SetCoefficients(double a2, double a1, double a0, double b2, double b1, double b0)
+        // Перевизначення методу для виведення коефіцієнтів
+        public override void PrintCoefficients()
         {
-            A2 = a2;
-            A1 = a1;
-            A0 = a0;
-            B2 = b2;
-            B1 = b1;
-            B0 = b0;
+            Console.WriteLine($"a2 = {a2}, a1 = {a1}, a0 = {a0}, b2 = {b2}, b1 = {b1}, b0 = {b0}");
         }
 
-        // 🔸 Перевизначений метод Calculate
-        public override double Calculate(double x0)
+        // 🔹 Перевизначення методу (динамічний поліморфізм)
+        public override double Calculate(double x)
         {
-            double denominator = B2 * x0 * x0 + B1 * x0 + B0;
+            double denominator = b2 * x * x + b1 * x + b0;
 
             if (Math.Abs(denominator) < EPS)
             {
@@ -106,52 +92,63 @@ namespace FractionFunctionApp
                 return double.NaN;
             }
 
-            return (A2 * x0 * x0 + A1 * x0 + A0) / denominator;
+            return (a2 * x * x + a1 * x + a0) / denominator;
         }
 
-        // 🔸 Перевизначення ToString
         public override string ToString()
         {
-            return $"f(x) = ({A2}x² + {A1}x + {A0}) / ({B2}x² + {B1}x + {B0})";
+            return $"f(x) = ({a2}x² + {a1}x + {a0}) / ({b2}x² + {b1}x + {b0})";
+        }
+
+        // 🔹 Статичний поліморфізм — перевантаження методів
+        public double Calculate(double x, bool absoluteValue)
+        {
+            double result = Calculate(x);
+            return absoluteValue ? Math.Abs(result) : result;
         }
     }
 
-    // 🔹 Головна програма
     class Program
     {
         static void Main(string[] args)
         {
-            Console.Write("Оберіть тип функції (1 — дробово-лінійна, 2 — дробова): ");
-            char userChoose = Console.ReadKey().KeyChar;
-            Console.WriteLine();
+            Console.WriteLine("=== Демонстрація динамічного і статичного метаморфізму ===\n");
 
-            FractionLinear func; // покажчик на базовий клас
+            Console.WriteLine("Оберіть режим роботи:");
+            Console.WriteLine("1 — Дробово-лінійна функція");
+            Console.WriteLine("2 — Дробова квадратична функція");
+            Console.Write("Ваш вибір: ");
+            string userChoose = Console.ReadLine();
 
-            if (userChoose == '1')
+            FractionFunction func;
+
+            if (userChoose == "1")
             {
-                func = new FractionLinear(2, 3, 1, 4); // (2x + 3)/(1x + 4)
-            }
-            else if (userChoose == '2')
-            {
-                func = new FractionQuadratic(1, 2, 3, 2, 1, 4); // (x² + 2x + 3)/(2x² + x + 4)
+                func = new FractionFunction();
+                Console.WriteLine("\nВведіть коефіцієнти для дробово-лінійної функції:");
+                func.SetCoefficients();
             }
             else
             {
-                Console.WriteLine("❌ Некоректний вибір! Програма завершена.");
-                return;
+                func = new QuadraticFractionFunction();
+                Console.WriteLine("\nВведіть коефіцієнти для дробової квадратичної функції:");
+                func.SetCoefficients();
             }
 
-            Console.WriteLine("\n" + func.ToString());
+            Console.WriteLine("\nКоефіцієнти функції:");
+            func.PrintCoefficients();
 
-            Console.Write("\nВведіть значення x0: ");
-            if (!double.TryParse(Console.ReadLine(), out double x0))
+            Console.Write("\nВведіть значення x: ");
+            double x = double.Parse(Console.ReadLine());
+
+            Console.WriteLine($"\n{func}");
+            Console.WriteLine($"f({x}) = {func.Calculate(x):F3}");
+
+            // Статичний поліморфізм (перевантаження) — тільки для QuadraticFractionFunction
+            if (func is QuadraticFractionFunction qf)
             {
-                Console.WriteLine("❌ Некоректне значення x0!");
-                return;
+                Console.WriteLine($"|f({x})| = {qf.Calculate(x, true):F3}");
             }
-
-            double result = func.Calculate(x0);
-            Console.WriteLine($"Результат: f({x0}) = {result:F3}");
         }
     }
 }
